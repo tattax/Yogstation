@@ -41,6 +41,10 @@
 	var/weapon_weight = WEAPON_LIGHT
 	var/spread = 0						//Spread induced by the gun itself.
 	var/randomspread = 1				//Set to 0 for shotguns. This is used for weapons that don't fire all their bullets at once.
+	var/parts = list()					//What parts do we have on this gun
+	var/part_slots = list()				//What slots are available
+	var/locked_part_slots = list()		//What slots are unavailable
+
 
 	lefthand_file = 'icons/mob/inhands/weapons/guns_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/weapons/guns_righthand.dmi'
@@ -121,6 +125,10 @@
 			visible_message("[G] can now fit a new pin, but the old one was destroyed in the process.", null, null, 3)
 			QDEL_NULL(pin)
 		qdel(src)
+
+/obj/item/gun/proc/remove_parts(src)
+	for(parts in part_slots)
+		forceMove(drop_location(src))
 
 /obj/item/gun/examine(mob/user)
 	. = ..()
