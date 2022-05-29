@@ -25,24 +25,24 @@
 		var/obj/item/organ/eyes/eyes = H.getorganslot(ORGAN_SLOT_EYES)
 		if(eyes)
 			to_chat(H, span_userdanger("You are blinded by a shower of blood!"))
-			H.Stun(20)
+			H.Stun(2 SECONDS)
 			H.blur_eyes(20)
 			eyes.applyOrganDamage(5)
 			H.confused += 3
 	for(var/mob/living/silicon/S in range(2,user))
 		to_chat(S, span_userdanger("Your sensors are disabled by a shower of blood!"))
-		S.Paralyze(60)
-	var/turf = get_turf(user)
+		S.Paralyze(6 SECONDS)
+	var/turf/T = get_turf(user)
 	var/mob/living/simple_animal/horror/H = user.has_horror_inside()
 	H?.leave_victim()
 	user.gib()
 	. = TRUE
 	sleep(5) // So it's not killed in explosion
-	var/mob/living/simple_animal/hostile/headcrab/crab = new(turf)
+	var/mob/living/simple_animal/hostile/headcrab/crab = new(T)
 	for(var/obj/item/organ/I in organs)
 		I.forceMove(crab)
 	crab.origin = M
 	if(crab.origin)
-		crab.origin.active = 1
+		crab.origin.active = TRUE
 		crab.origin.transfer_to(crab)
 		to_chat(crab, span_warning("You burst out of the remains of your former body in a shower of gore!"))
