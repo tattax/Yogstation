@@ -309,11 +309,11 @@
 		return
 
 	if(isclosedturf(target) || isobj(target))
-		var/list/acid_ratio_to_use = list(250, 150)
+		var/acid_ratio_to_use = 250
 		var/datum/antagonist/zombie/zombie_owner = user.mind?.has_antag_datum(/datum/antagonist/zombie)
 		if(locate("stronger_acid") in zombie_owner.zombie_mutations)
-			acid_ratio_to_use = list(300, 200)
-		if(!target.acid_act(acid_ratio_to_use))
+			acid_ratio_to_use = 300
+		if(!target.acid_act(acid_ratio_to_use, 150))
 			to_chat(user, span_warning("You can't dissolve [target]."))
 			return
 		user.visible_message(span_danger("[user] smears acid onto [target], causing it to melt!"))
