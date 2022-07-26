@@ -596,8 +596,6 @@
 	hitsound = "swing_hit"
 	attack_verb = list("smashed", "slammed", "crushed", "whacked")
 	sharpness = SHARP_NONE
-	var/can_drop = FALSE
-	var/fake = FALSE
 	resistance_flags = ACID_PROOF
 
 /obj/item/melee/flesh_maul/Initialize(mapload,silent,synthetic)
@@ -605,8 +603,6 @@
 	ADD_TRAIT(src, TRAIT_NODROP, CHANGELING_TRAIT)
 	if(ismob(loc) && !silent)
 		loc.visible_message(span_warning("[loc.name]\'s arm snaps and shifts into a grisly maul!"), span_warning("Our arm twists and mutates, transforming into a powerful maul."), span_italics("You hear organic matter ripping and tearing!"))
-	if(synthetic)
-		can_drop = TRUE
 
 /obj/item/melee/flesh_maul/afterattack(atom/target, mob/user, proximity)	
 	. = ..()
@@ -638,6 +634,6 @@
 			T.deconstruct(FALSE)
 			return
 		if(!isnull(target))
-			S.take_damage(structure_damage, BRUTE, "melee", 0)
+			S.take_damage(structure_damage, BRUTE, MELEE, FALSE)
 		if(make_sound)
-			playsound(src, 'sound/effects/bang.ogg', 50, 1)
+			playsound(src, 'sound/effects/bang.ogg', 50, TRUE)

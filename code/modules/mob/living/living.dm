@@ -1389,9 +1389,9 @@
 		update_pipe_vision()
 
 /mob/living/update_mouse_pointer()
-	..()
-	if (client && ranged_ability && ranged_ability.ranged_mousepointer)
-		client.mouse_pointer_icon = ranged_ability.ranged_mousepointer
+	. = ..()
+	if(ranged_ability?.ranged_mousepointer)
+		client?.mouse_pointer_icon = ranged_ability?.ranged_mousepointer
 
 /mob/living/vv_edit_var(var_name, var_value)
 	switch(var_name)

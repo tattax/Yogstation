@@ -1179,20 +1179,19 @@
 
 ///Update the mouse pointer of the attached client in this mob
 /mob/proc/update_mouse_pointer()
-	if (!client)
+	if(!client)
 		return
 	client.mouse_pointer_icon = initial(client.mouse_pointer_icon)
-	if (ismecha(loc))
+	if(ismecha(loc))
 		var/obj/mecha/M = loc
-		if(M.mouse_pointer)
-			client.mouse_pointer_icon = M.mouse_pointer
-	else if (istype(loc, /obj/vehicle/sealed))
+		client.mouse_pointer_icon = M?.mouse_pointer
+	else if(istype(loc, /obj/vehicle/sealed))
 		var/obj/vehicle/sealed/E = loc
-		if(E.mouse_pointer)
-			client.mouse_pointer_icon = E.mouse_pointer
+		client.mouse_pointer_icon = E?.mouse_pointer
+	if(client.mouse_override_icon)
+		client.mouse_pointer_icon = client.mouse_override_icon
 
-
-///This mob is abile to read books
+///This mob is able to read books
 /mob/proc/is_literate()
 	return FALSE
 

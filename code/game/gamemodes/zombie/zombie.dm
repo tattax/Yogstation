@@ -2,10 +2,6 @@
 
 GLOBAL_LIST_EMPTY(zombies)
 
-/proc/isinfected(mob/living/M)
-	return istype(M) && M.mind && M.mind.has_antag_datum(/datum/antagonist/zombie)
-
-
 /datum/game_mode/zombie
 	name = "zombie"
 	config_tag = "zombie"
@@ -103,7 +99,7 @@ GLOBAL_LIST_EMPTY(zombies)
 		SSshuttle.emergency.request(null, set_coefficient=0.5)
 
 /datum/game_mode/zombie/proc/add_zombie(datum/mind/zombie_mind)
-	if (!istype(zombie_mind))
+	if(!istype(zombie_mind))
 		return FALSE
 
 	if(!main_team)

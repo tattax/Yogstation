@@ -24,7 +24,7 @@
 	desc = "Order and fire up a supermatter shard"
 	reward = 50000
 
-// Only available if the station doesn't have a suppermatter
+// Only available if the station doesn't have a suppermatter // i wonder what's for dinner
 /datum/department_goal/eng/additional_supermatter/is_available()
 	return !(GLOB.main_supermatter_engine)
 

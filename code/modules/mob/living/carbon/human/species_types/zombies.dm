@@ -1,11 +1,11 @@
-#define REGENERATION_DELAY 60  // After taking damage, how long it takes for automatic regeneration to begin
+#define REGENERATION_DELAY 6 SECONDS  // After taking damage, how long it takes for automatic regeneration to begin
 
 /datum/species/zombie
 	// 1spooky
 	name = "High-Functioning Zombie"
 	id = "zombie"
 	say_mod = "moans"
-	sexes = 0
+	sexes = FALSE
 	meat = /obj/item/reagent_containers/food/snacks/meat/slab/human/mutant/zombie
 	species_traits = list(NOBLOOD,NOZOMBIE,NOTRANSSTING,HAS_FLESH,HAS_BONE)
 	inherent_traits = list(TRAIT_STABLELIVER, TRAIT_STABLEHEART, TRAIT_RESISTCOLD ,TRAIT_RESISTHIGHPRESSURE,TRAIT_RESISTLOWPRESSURE,TRAIT_RADIMMUNE,TRAIT_EASYDISMEMBER,TRAIT_EASILY_WOUNDED,TRAIT_LIMBATTACHMENT,TRAIT_NOBREATH,TRAIT_NODEATH,TRAIT_FAKEDEATH)
@@ -25,7 +25,11 @@
 	name = "Infectious Zombie"
 	id = "memezombies"
 	limbs_id = "zombie"
-	inherent_traits = list(TRAIT_STABLELIVER, TRAIT_STABLEHEART, TRAIT_RESISTCOLD,TRAIT_RESISTHIGHPRESSURE,TRAIT_RESISTLOWPRESSURE,TRAIT_RADIMMUNE,TRAIT_EASILY_WOUNDED,TRAIT_LIMBATTACHMENT,TRAIT_NOBREATH,TRAIT_NODEATH,TRAIT_FAKEDEATH,TRAIT_STUNIMMUNE)
+	inherent_traits = list(
+	TRAIT_STABLELIVER, TRAIT_STABLEHEART, TRAIT_RESISTCOLD,
+	TRAIT_RESISTHIGHPRESSURE, TRAIT_RESISTLOWPRESSURE, TRAIT_RADIMMUNE, 
+	TRAIT_EASILY_WOUNDED, TRAIT_LIMBATTACHMENT, TRAIT_NOBREATH, 
+	TRAIT_NODEATH, TRAIT_FAKEDEATH, TRAIT_STUNIMMUNE)
 	mutanthands = /obj/item/zombie_hand
 	armor = 20 // 120 damage to KO a zombie, which kills it
 	speedmod = 1.6
@@ -91,7 +95,7 @@
 	name = "Human"
 	id = "goofzombies"
 	limbs_id = "zombie" //They look like zombies
-	sexes = 0
+	sexes = FALSE
 	meat = /obj/item/reagent_containers/food/snacks/meat/slab/human/mutant/zombie
 	mutanttongue = /obj/item/organ/tongue/zombie
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | ERT_SPAWN
@@ -103,8 +107,13 @@
 	burnmod = 0.925
 	speedmod = 1.45
 	mutanthands = /obj/item/zombie_hand/gamemode
-	inherent_traits = list(TRAIT_RESISTCOLD, TRAIT_RESISTHIGHPRESSURE, TRAIT_RESISTLOWPRESSURE, TRAIT_RESISTDAMAGESLOWDOWN, TRAIT_STABLELIVER, TRAIT_STABLEHEART,
-	TRAIT_RADIMMUNE, TRAIT_LIMBATTACHMENT, TRAIT_NOBREATH, TRAIT_NODEATH, TRAIT_FAKEDEATH, TRAIT_NOHUNGER, TRAIT_RESISTHEAT, TRAIT_SHOCKIMMUNE, TRAIT_PUSHIMMUNE, TRAIT_STUNIMMUNE, TRAIT_BADDNA, TRAIT_EASILY_WOUNDED, TRAIT_EASYDISMEMBER)
+	inherent_traits = list(
+	TRAIT_RESISTCOLD, TRAIT_RESISTHIGHPRESSURE, TRAIT_RESISTLOWPRESSURE, 
+	TRAIT_RESISTDAMAGESLOWDOWN, TRAIT_STABLELIVER, TRAIT_STABLEHEART,
+	TRAIT_RADIMMUNE, TRAIT_LIMBATTACHMENT, TRAIT_NOBREATH, 
+	TRAIT_NODEATH, TRAIT_FAKEDEATH, TRAIT_NOHUNGER,
+	TRAIT_RESISTHEAT, TRAIT_SHOCKIMMUNE, TRAIT_PUSHIMMUNE, 
+	TRAIT_STUNIMMUNE, TRAIT_BADDNA, TRAIT_EASILY_WOUNDED, TRAIT_EASYDISMEMBER)
 	no_equip = list(SLOT_WEAR_MASK, SLOT_GLASSES, SLOT_HEAD)
 
 /datum/species/zombie/infectious/gamemode/runner
@@ -114,19 +123,76 @@
 	brutemod = 1
 
 /datum/species/zombie/infectious/gamemode/juggernaut
+	limbs_id = "juggernaut"
 	mutanthands = /obj/item/zombie_hand/gamemode/tank
 	armor = 30 // 135 damage to KO a zombie, which kills it
 	brutemod = 0.75
 	speedmod = 1.3
 	heal_rate = 1.20
+	var/infection_per_damage = 2
 
 /datum/species/zombie/infectious/gamemode/spitter
+	mutanthands = /obj/item/zombie_hand/gamemode/spitter
 	armor = 5 // 110 damage to KO a zombie, which kills it
 	brutemod = 1
 	burnmod = 1
+	var/infection_regen = 1
+
+///Delay for infection points to regenerate after deactivating the ability.
+#define SMOKER_REGEN_DELAY 5 SECONDS
+
+/datum/species/zombie/infectious/gamemode/smoker
+	mutanthands = /obj/item/zombie_hand/gamemode/smoker
+	var/infection_regen = 1
+
+/*
+* Smokers and Spitters regenerate infection points naturally.
+*/
+/datum/species/zombie/infectious/gamemode/smoker/spec_life(mob/living/carbon/C)
+	. = ..()
+	if(!isinfected(C))
+		return
+	var/datum/antagonist/zombie/Z = C.mind.has_antag_datum(/datum/antagonist/zombie)
+	var/datum/action/innate/zombie/default/smoke/ability = locate() in Z.zombie_abilities
+	if(ability?.last_fired > world.time - SMOKER_REGEN_DELAY)
+		return
+	if(Z.infection_max - Z.infection >= infection_regen)
+		Z.use_infection(-infection_regen)
+	else
+		Z.use_infection(Z.infection - Z.infection_max)
+
+/datum/species/zombie/infectious/gamemode/spitter/spec_life(mob/living/carbon/C)
+	. = ..()
+	if(!isinfected(C))
+		return
+	var/datum/antagonist/zombie/Z = C.mind.has_antag_datum(/datum/antagonist/zombie)
+	if(Z.infection_max - Z.infection >= infection_regen)
+		Z.use_infection(-infection_regen)
+	else
+		Z.use_infection(Z.infection - Z.infection_max)
+
+#undef SMOKER_REGEN_DELAY
+
+/*
+* Juggs gain infection points when harmed.
+*/
+/datum/species/zombie/infectious/gamemode/juggernaut/apply_damage(damage, damagetype = BRUTE, def_zone = null, blocked, mob/living/carbon/human/H, wound_bonus = 0, bare_wound_bonus = 0, sharpness = FALSE)
+	var/obj/item/zombie_hand/gamemode/tank/hand = H.get_active_held_item() || H.get_inactive_held_item()
+	if(!hand.is_stub && hand.defensive_mode && def_zone != BODY_ZONE_L_ARM && prob(35))
+		def_zone = BODY_ZONE_L_ARM //35% chance to arm to take damage if defensive
+	. = ..()
+	if(!.)
+		return
+	if(damagetype == TOX)
+		return
+	var/datum/antagonist/zombie/Z = H.mind.has_antag_datum(/datum/antagonist/zombie)
+	if(Z.infection_max - Z.infection >= damage * infection_per_damage)
+		Z.use_infection(-damage * infection_per_damage)
+	else
+		Z.use_infection(Z.infection - Z.infection_max)
 
 /datum/species/zombie/infectious/gamemode/spec_stun(mob/living/carbon/human/H,amount)
-	. = 0
+	return FALSE
 
 /datum/species/zombie/infectious/gamemode/apply_damage(damage, damagetype = BRUTE, def_zone = null, blocked, mob/living/carbon/human/H, wound_bonus = 0, bare_wound_bonus = 0, sharpness = FALSE)
 	if(damagetype == STAMINA)
@@ -141,7 +207,7 @@
 	speedmod = 1.2
 
 /datum/species/zombie/infectious/gamemode/necromancer
-	mutanthands = /obj/item/zombie_hand/gamemode/necro
+	//mutanthands = /obj/item/zombie_hand/gamemode/necro
 	armor = 10
 	speedmod = 1.2
 
@@ -152,8 +218,11 @@
 	brutemod = 1.05
 	burnmod = 1.05
 	species_traits = list(NO_UNDERWEAR, NOBLOOD, NOZOMBIE, NOTRANSSTING, HAS_FLESH, HAS_BONE)
-	inherent_traits = list(TRAIT_EASYDISMEMBER, TRAIT_RESISTCOLD, TRAIT_RESISTHIGHPRESSURE, TRAIT_RESISTLOWPRESSURE,
-	TRAIT_RADIMMUNE, TRAIT_LIMBATTACHMENT, TRAIT_NOBREATH, TRAIT_NODEATH, TRAIT_FAKEDEATH, TRAIT_NOHUNGER, TRAIT_RESISTHEAT, TRAIT_SHOCKIMMUNE, TRAIT_PUSHIMMUNE, TRAIT_STUNIMMUNE, TRAIT_BADDNA, TRAIT_EASILY_WOUNDED)
+	inherent_traits = list(
+	TRAIT_EASYDISMEMBER, TRAIT_RESISTCOLD, TRAIT_RESISTHIGHPRESSURE, TRAIT_RESISTLOWPRESSURE,
+	TRAIT_RADIMMUNE, TRAIT_LIMBATTACHMENT, TRAIT_NOBREATH, TRAIT_NODEATH, 
+	TRAIT_FAKEDEATH, TRAIT_NOHUNGER, TRAIT_RESISTHEAT, TRAIT_SHOCKIMMUNE, 
+	TRAIT_PUSHIMMUNE, TRAIT_STUNIMMUNE, TRAIT_BADDNA, TRAIT_EASILY_WOUNDED)
 
 /datum/species/zombie/infectious/gamemode/necromanced_minion/spec_life(mob/living/carbon/human/H)
 	. = ..()

@@ -37,12 +37,16 @@
 	var/available_points = 4
 	var/consumed_souls = 0
 
-	//An associative list (associated by ability typepaths) containing the abilities the horror has
+	///An associative list (associated by ability typepaths) containing the abilities the horror has
 	var/list/horrorabilities = list()
-	//same (associated by their ID), but for permanent upgrades
+	///Same (associated by their ID), but for permanent upgrades
 	var/list/horrorupgrades = list()
-	//list storing what items we have to un-glue when stopping mind control
+	///list storing what items we have to un-glue when stopping mind control
 	var/list/clothing = list()
+	///Abilities that we give on Initialize
+	var/list/abilities_to_give = list(/datum/action/innate/horror/mutate, /datum/action/innate/horror/seek_soul, /datum/action/innate/horror/consume_soul,
+	/datum/action/innate/horror/talk_to_host, /datum/action/innate/horror/freeze_victim, /datum/action/innate/horror/toggle_hide, /datum/action/innate/horror/talk_to_brain,
+	/datum/action/innate/horror/take_control, /datum/action/innate/horror/leave_body, /datum/action/innate/horror/make_chems, /datum/action/innate/horror/give_back_control)
 
 	var/bonding = FALSE
 	var/controlling = FALSE
@@ -62,17 +66,8 @@
 	real_name = "[pick(GLOB.horror_names)]"
 
 	//default abilities
-	add_ability(/datum/action/innate/horror/mutate)
-	add_ability(/datum/action/innate/horror/seek_soul)
-	add_ability(/datum/action/innate/horror/consume_soul)
-	add_ability(/datum/action/innate/horror/talk_to_host)
-	add_ability(/datum/action/innate/horror/freeze_victim)
-	add_ability(/datum/action/innate/horror/toggle_hide)
-	add_ability(/datum/action/innate/horror/talk_to_brain)
-	add_ability(/datum/action/innate/horror/take_control)
-	add_ability(/datum/action/innate/horror/leave_body)
-	add_ability(/datum/action/innate/horror/make_chems)
-	add_ability(/datum/action/innate/horror/give_back_control)
+	for(var/datum/action/innate/horror/horrorability as anything in abilities_to_give)
+		add_ability(horrorability)
 	RefreshAbilities()
 
 	var/datum/atom_hud/hud = GLOB.huds[DATA_HUD_MEDICAL_ADVANCED]

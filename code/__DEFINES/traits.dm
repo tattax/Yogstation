@@ -114,7 +114,7 @@
 //Remember to update code/datums/traits/ folder if you're adding/removing/renaming traits.
 
 //mob traits
-#define TRAIT_BLIND 			"blind"
+#define TRAIT_BLIND				"blind"
 #define TRAIT_MUTE				"mute"
 #define TRAIT_EMOTEMUTE			"emotemute"
 #define TRAIT_DEAF				"deaf"
@@ -135,7 +135,7 @@
 #define TRAIT_DISFIGURED		"disfigured"
 #define TRAIT_XENO_HOST			"xeno_host"	//Tracks whether we're gonna be a baby alien's mummy.
 #define TRAIT_STUNIMMUNE		"stun_immunity"
-#define TRAIT_STUNRESISTANCE    "stun_resistance"
+#define TRAIT_STUNRESISTANCE	"stun_resistance"
 #define TRAIT_SLEEPIMMUNE		"sleep_immunity"
 #define TRAIT_PUSHIMMUNE		"push_immunity"
 #define TRAIT_SHOCKIMMUNE		"shock_immunity"
@@ -206,10 +206,10 @@
 #define TRAIT_OIL_FRIED			"oil_fried"
 #define TRAIT_SHELTERED			"sheltered"
 #define TRAIT_RANDOM_ACCENT		"random_accent"
-#define TRAIT_MEDICALIGNORE     "medical_ignore"
+#define TRAIT_MEDICALIGNORE		"medical_ignore"
 #define TRAIT_PASSTABLE			"passtable"
 #define TRAIT_SLIME_EMPATHY		"slime-empathy"
-#define TRAIT_ACIDBLOOD         "acid_blood"
+#define TRAIT_ACIDBLOOD			"acid_blood"
 #define TRAIT_PRESERVED_ORGANS	"preserved_organs"
 #define TRAIT_SKINNY			"skinny"  //For those with a slightly thinner torso sprite
 #define TRAIT_SURGERY_PREPARED	"surgery_prepared"
@@ -222,6 +222,12 @@
 #define TRAIT_COLDBLOODED       "coldblooded" // Your body is literal room temperature. Does not make you immune to the temp 
 #define TRAIT_EAT_MORE			"eat_more" //You get hungry three times as fast
 #define TRAIT_MESONS			"mesons"
+#define TRAIT_NOPULSE			"nopulse" // Your heart doesn't beat
+#define TRAIT_MASQUERADE		"masquerade" // Falsifies Health analyzer blood levels
+#define TRAIT_COLDBLOODED		"coldblooded" // Your body is literal room temperature. Does not make you immune to the temp 
+#define TRAIT_EAT_MORE			"eat_more" //You get hungry three times as fast
+#define TRAIT_MESONS			"mesons"
+#define TRAIT_DODGE				"dodge" //Projectiles pass through you.
 
 //non-mob traits
 /// Used for limb-based paralysis, where replacing the limb will fix it.
@@ -230,8 +236,8 @@
 #define TRAIT_DISABLED_BY_WOUND		"disabled-by-wound"
 
 // item traits
-#define TRAIT_NODROP            "nodrop"
-#define TRAIT_T_RAY_VISIBLE     "t-ray-visible" // Visible on t-ray scanners if the atom/var/level == 1
+#define TRAIT_NODROP			"nodrop"
+#define TRAIT_T_RAY_VISIBLE		"t-ray-visible" // Visible on t-ray scanners if the atom/var/level == 1
 #define TRAIT_NO_TELEPORT		"no-teleport" //you just can't
 #define TRAIT_NO_STORAGE		"no-storage" //you cannot put this in any container, backpack, box etc
 
@@ -286,6 +292,7 @@
 #define VEHICLE_TRAIT "vehicle" // inherited from riding vehicles
 #define INNATE_TRAIT "innate"
 #define STATION_TRAIT "station-trait"
+#define ZOMBIE_TRAIT "zombie"
 
 // unique trait sources, still defines
 #define CLONING_POD_TRAIT "cloning-pod"

@@ -123,11 +123,10 @@
 
 	owner.grab_ghost()
 	owner.visible_message(span_danger("[owner] suddenly convulses, as [owner.p_they()][stand_up ? " stagger to [owner.p_their()] feet and" : ""] gain a ravenous hunger in [owner.p_their()] eyes!"), span_alien("You HUNGER!"))
-	playsound(owner.loc, 'sound/hallucinations/far_noise.ogg', 50, 1)
+	playsound(owner.loc, 'sound/hallucinations/far_noise.ogg', 50, TRUE)
 	owner.do_jitter_animation(living_transformation_time)
 	owner.Stun(living_transformation_time)
 	to_chat(owner, span_alertalien("You are now a zombie! Help your fellow allies take over the station!"))
-
 
 	if(!isinfected(owner)) //Makes them the *actual* antag, instead of just a zombie.
 		var/datum/game_mode/zombie/GM = SSticker.mode
@@ -135,10 +134,12 @@
 			return
 		GM.add_zombie(owner.mind)
 
-	var/datum/antagonist/zombie/Z = locate() in owner.mind.antag_datums
-	if(!Z.evolution.owner)
-		Z.evolution.Grant(owner)
-
 	if(owner.handcuffed)
 		var/obj/O = owner.get_item_by_slot(SLOT_HANDCUFFED)
 		qdel(O)
+
+/obj/item/organ/zombie_infection/gamemode/special/zombify()
+	. = ..()
+	var/datum/antagonist/zombie/Z = owner?.mind?.has_antag_datum(/datum/antagonist/zombie)
+	if(!Z.evolution.owner)
+		Z.evolution.Grant(owner)

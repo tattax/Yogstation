@@ -46,6 +46,8 @@
 	return BULLET_ACT_HIT
 
 /mob/living/bullet_act(obj/item/projectile/P, def_zone)
+	if(HAS_TRAIT(src, TRAIT_DODGE))
+		return BULLET_ACT_PENETRATE
 	var/armor = run_armor_check(def_zone, P.flag, "","",P.armour_penetration)
 	if(!P.nodamage)
 		last_damage = P.name

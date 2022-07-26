@@ -1267,12 +1267,12 @@
 			to_chat(user, span_warning("The airlock won't budge!"))
 			return
 
-		var/time_to_open = 5
+		var/time_to_open = 0.5 SECONDS
 		if(hasPower() && !prying_so_hard)
 			if (I.tool_behaviour == TOOL_CROWBAR) //we need another check, futureproofing for if/when bettertools actually completely replaces the old jaws
-				time_to_open = 50
+				time_to_open = 5 SECONDS
 				if(istype(I,/obj/item/jawsoflife/jimmy))
-					time_to_open = 30
+					time_to_open = 3 SECONDS
 					var/obj/item/jawsoflife/jimmy/J = I
 					if(J.pump_charge >= J.pump_cost)
 						J.pump_charge = J.pump_charge - J.pump_cost
@@ -1280,7 +1280,7 @@
 							J.pump_charge = 0
 						playsound(src, 'sound/items/jimmy_pump.ogg', 100, TRUE)
 						if(J.obj_flags & EMAGGED)
-							time_to_open = 15
+							time_to_open = 1.5 SECONDS
 					else
 						if(user)
 							to_chat(user, span_warning("You do not have enough charge in the [J] for this. You need at least [J.pump_cost]% "))
@@ -1298,24 +1298,22 @@
 	if(istype(I, /obj/item/zombie_hand/gamemode))
 		var/obj/item/zombie_hand/gamemode/hands = I
 		var/door_time_multiplier = hands.door_open_modifier
-		var/time_to_open = 50 * door_time_multiplier
-
-
+		var/time_to_open = (5 * door_time_multiplier) SECONDS
 
 		if(!density)//already open
 			return
 
 		if(welded && !locked)
 			to_chat(user, span_warning("It's welded, this will take a while..."))
-			time_to_open = 100 * door_time_multiplier
+			time_to_open = (10 * door_time_multiplier) SECONDS
 
 		if(locked && !welded)
 			to_chat(user, span_warning("The bolts are down, it won't budge! Forcing the bolts will take a while..."))
-			time_to_open = 80 * door_time_multiplier
+			time_to_open = (8 * door_time_multiplier) SECONDS
 
 		if(locked && welded)
-			to_chat(user, span_warning("The bolts are down, and it's welded.Forcing the bolts and breaking the seal will take a long while..."))
-			time_to_open = 200 * door_time_multiplier
+			to_chat(user, span_warning("The bolts are down, and it's welded. Forcing the bolts and breaking the seal will take a long while..."))
+			time_to_open = (20 * door_time_multiplier) SECONDS
 
 		if(brace)
 			time_to_open *= 1.5
@@ -1494,9 +1492,9 @@
 	user.visible_message(span_warning("[user] begins prying open [src]."),\
 						span_noticealien("You begin digging your claws into [src] with all your might!"),\
 						span_warning("You hear groaning metal..."))
-	var/time_to_open = 5
+	var/time_to_open = 0.5 SECONDS
 	if(hasPower())
-		time_to_open = 50 //Powered airlocks take longer to open, and are loud.
+		time_to_open = 5 SECONDS //Powered airlocks take longer to open, and are loud.
 		playsound(src, 'sound/machines/airlock_alien_prying.ogg', 100, 1)
 
 

@@ -603,16 +603,16 @@
 //Preset for general and toggled actions
 /datum/action/innate
 	check_flags = NONE
-	var/active = 0
+	var/active = FALSE
 
 /datum/action/innate/Trigger()
 	if(!..())
-		return 0
+		return FALSE
 	if(!active)
 		Activate()
 	else
 		Deactivate()
-	return 1
+	return TRUE
 
 /datum/action/innate/proc/Activate()
 	return
