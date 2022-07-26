@@ -1633,6 +1633,7 @@
 #include "code\modules\antagonists\xeno\xeno.dm"
 #include "code\modules\antagonists\zombie\_zombie.dm"
 #include "code\modules\antagonists\zombie\abilities\_abilities.dm"
+#include "code\modules\antagonists\zombie\abilities\brainy.dm"
 #include "code\modules\antagonists\zombie\abilities\necromance.dm"
 #include "code\modules\antagonists\zombie\abilities\runner.dm"
 #include "code\modules\antagonists\zombie\abilities\smoker.dm"
